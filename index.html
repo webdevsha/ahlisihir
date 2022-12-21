@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!--
+      This is the page head - it contains info the browser uses to display the page
+      You won't see what's in the head in the page
+      Scroll down to the body element for the page content
+    -->
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+
+    <!-- 
+      This is an HTML comment
+      You can write text in a comment and the content won't be visible in the page
+    -->
+
+    <title>Hello World!</title>
+
+    <!-- Meta tags for SEO and social sharing -->
+    <link rel="canonical" href="https://glitch-hello-website.glitch.me/" />
+    <meta
+      name="description"
+      content="A simple website, built with Glitch. Remix it to get your own."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:title" content="Hello World!" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://glitch-hello-website.glitch.me/" />
+    <meta
+      property="og:description"
+      content="A simple website, built with Glitch. Remix it to get your own."
+    />
+    <meta
+      property="og:image"
+      content="https://cdn.glitch.com/605e2a51-d45f-4d87-a285-9410ad350515%2Fhello-website-social.png?v=1616712748147"
+    />
+    <meta name="twitter:card" content="summary" />
+
+    <!-- Import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+
+    <!-- Import the webpage's javascript file -->
+    <script src="/script.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script id="OpenAIscript">
+      function writecopy() {
+        var data = document.getElementById("AI_input");
+        send = data.value;
+        console.log(send);
+
+        var data2 = document.getElementById("AI_instruction");
+        productInfo = data2.value;
+        console.log(productInfo);
+        
+        const apiKey = process.env.OPENAI_API_KEY;
+
+        var raw = JSON.stringify({
+          "model": "text-davinci-edit-001",
+          "input": send,
+          "instruction":
+            "Create a high-quality Instagram captions, in Malay for the given product name. Focus on solving the problem. Make the tone of the description: joyful and compassionate.  Limited to 60 words only. Start the caption with relatable storytelling",
+          "temperature": 0.7,
+          "top_p": 1
+        });
+
+        var requestOptions = {
+          method: "POST",
+          headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+          },
+          body: raw,
+          redirect: "follow",
+        };
+
+        fetch("https://api.openai.com/v1/edits", requestOptions)
+          .then((response) => response.text())
+          .then((result) => {
+            document.getElementById("AI_balas").innerHTML;
+            var jawapan = JSON.parse(result);
+            var jawapan2 = jawapan.choices[0].text;
+
+            document.getElementById("AI_balas").innerHTML = jawapan2;
+            // balas.choices[0].text
+
+            // document.getElementById("balas").innerHTML = JSON.parse();
+            console.log(result);
+          })
+          .catch((error) => console.log("error", error));
+      }
+    </script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  </head>
+
+  <body>
+    <div id="myDIV" class="header">
+      <h2 style="margin: 5px; color: white !important">
+        Robot, boleh tolong saya ...
+      </h2>
+
+      <p>
+        <label>Your product name</label>
+        <input
+          id="AI_input"
+          type="text"
+          name="input"
+          placeholder="Your product name"
+          required
+        />
+      </p>
+      <p>
+        <label>Your product description</label>
+        <br />
+        <input
+          id="AI_instruction"
+          type="textarea"
+          rows="3"
+          name="instruction"
+          placeholder="Your product description"
+          required
+        />
+      </p>
+      <p>
+        <input
+          id="AI_button"
+          onclick="writecopy()"
+          type="submit"
+          value="Make that magic for me"
+        />
+      </p>
+      <p style="padding-top: 13px !important;" id="AI_balas">
+        Your result will be here
+      </p>
+      <br />
+      <input
+        type="submit"
+        onclick="newElement()"
+        class="addBtn"
+        value="Save result"
+      />
+    </div>
+
+    <ul id="myUL" onclick="copyLiText(this)">
+      <li>
+        [Contoh keputusan] Product Name: Tongkat Ali - Copywriting Caption anda:
+        Rasa kopi yang sangat lazat dengan manfaat herba tongkat ali yang
+        tinggi. Terdapat vitamin c, antioksidan yang membantu untuk meningkatkan
+        stamina anda.
+      </li>
+    </ul>
+
+    <div>
+      <button
+        class="addBtn"
+        style="background-color: orange !important"
+        onclick="saveTextAsFile()"
+      >
+        Muat turun supaya tak hilang
+      </button>
+    </div>
+    <script type="text/javascript">
+      function saveTextAsFile() {
+        var textToSave = document.getElementById("AI_input").value;
+        // Get the list of <li> elements
+        const listItems = document.querySelectorAll("li");
+
+        // Get the text content of each <li> element
+        const listText = Array.from(listItems).map(
+          (li) => li.textContent + "\n" + "\n"
+        );
+
+        // Create a Blob object with the text file data
+        const textFile = new Blob(listText, { type: "text/plain" });
+
+        // Create a URL for the text file
+        const fileUrl = URL.createObjectURL(textFile);
+
+        // Create a link element to trigger the download
+        const downloadLink = document.createElement("a");
+        downloadLink.href = fileUrl;
+        downloadLink.download = "list.txt";
+
+        // Append the link to the body and click it
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+
+        // Remove the link from the body
+        document.body.removeChild(downloadLink);
+      }
+    </script>
+  </body>
+</html>
